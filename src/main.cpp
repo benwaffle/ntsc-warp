@@ -1,58 +1,67 @@
 #include <Arduino.h>
+#include <SparkFunMPU9250-DMP.h>
 #include <TVout.h>     // import the library
 #include <fontALL.h>   // and its built-in fonts
 #include <image.h>
 
-TVout tv;   // instance of the TVout library
+TVout tv;
+MPU9250_DMP imu;
 
 void setup() {
   Serial.begin(9600);
   while (!Serial)
     ;
 
-  // init the TVout library and select a font
-  tv.begin(NTSC, 128, 96);
-  tv.clear_screen();
-  // tv.select_font(font6x8);
+  if (imu.begin() != INV_SUCCESS) {
+    while (1) {
+      Serial.println("Unable to communicate with MPU-9250");
+      Serial.println("Check connections, and try again.");
+      Serial.println();
+      delay(1000);
+    }
+  }
 
-  // // display some text!
-  // tv.println("Hello world!");
-  // delay(2000);
+  imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
+  imu.setGyroFSR(2000);
+  imu.setAccelFSR(16);
+  imu.setLPF(5);
+  imu.setSampleRate(10);
+  imu.setCompassSampleRate(10);
 
-  // // show the various fonts
-  // tv.clear_screen();
-  // tv.println("I have a few fonts:");
-  // tv.select_font(font4x6);
-  // tv.println("4x6 font");
-  // tv.select_font(font6x8);
-  // tv.println("6x8 font");
-  // tv.select_font(font8x8);
-  // tv.println("8x8 font");
-  // tv.delay(4000);
+  char c;
+  if ((c = tv.begin(NTSC, 104, 87)) != 0) {
+    while (1) {
+      Serial.print(F("error tv begin "));
+      Serial.print(' ');
+      Serial.println((int)c);
+      delay(1000);
+    }
+  }
   tv.bitmap(0, 0, image);
-  // tv.bitmap(0, 0, TVOlogo);
 }
 
-
 void loop() {
+  if (imu.dataReady()) {
+    imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
+    float accelX = imu.calcAccel(imu.ax);
+    float accelY = imu.calcAccel(imu.ay);
+    float accelZ = imu.calcAccel(imu.az);
+    float gyroX = imu.calcGyro(imu.gx);
+    float gyroY = imu.calcGyro(imu.gy);
+    float gyroZ = imu.calcGyro(imu.gz);
+    float magX = imu.calcMag(imu.mx);
+    float magY = imu.calcMag(imu.my);
+    float magZ = imu.calcMag(imu.mz);
 
-  // clear the screen every frame
-  // tv.clear_screen();
+    Serial.println(String(accelX));
 
-  // tv.bitmap(0, 0, image, 0, 32, 25);
-  // tv.bitmap(0, 0, TVOlogo);
-
-  // circles
-  // args: x, y, diameter, color (WHITE, BLACK, or INVERT)
-  // tv.draw_circle(50,50, 30, WHITE);
-  // tv.draw_circle(tv.hres()-50,tv.vres()-50, 30, WHITE);
-
-  // rectangle
-  // args: x, y, width, height, stroke color, fill color
-  // tv.draw_rect(50,50, tv.hres()-1000,tv.vres()-100, WHITE, INVERT);
-
-  // lines
-  // args: start x, start y, end x, end y, stroke color
-  // tv.draw_line(0,0, tv.hres(),tv.vres(), INVERT);
-  // tv.draw_line(0,tv.vres(), tv.hres(),0, INVERT);
+    // Serial.println("Accel: " + String(accelX) + ", " + String(accelY) + ", " +
+    //                String(accelZ) + " g");
+    // Serial.println("Gyro: " + String(gyroX) + ", " + String(gyroY) + ", " +
+    //                String(gyroZ) + " dps");
+    // Serial.println("Mag: " + String(magX) + ", " + String(magY) + ", " +
+    //                String(magZ) + " uT");
+    // Serial.println("Time: " + String(imu.time) + " ms");
+    Serial.println(); // WTF
+  }
 }

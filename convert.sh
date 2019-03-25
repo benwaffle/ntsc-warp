@@ -2,8 +2,8 @@
 
 export OCL_ICD_VENDORS=mesa # radeon is broken
 
-WIDTH=128
-HEIGHT=96
+WIDTH=104
+HEIGHT=87
 
 if [ $# != 1 ]; then
     echo "./convert.sh <image.jpg>"
