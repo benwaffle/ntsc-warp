@@ -30,7 +30,7 @@ void setup() {
   imu.setCompassSampleRate(10);
 
   char c;
-  if ((c = tv.begin(NTSC, 104, 87)) != 0) {
+  if ((c = tv.begin(NTSC, 104, 86)) != 0) {
     while (1) {
       Serial.print(F("error tv begin "));
       Serial.print(' ');
@@ -38,7 +38,6 @@ void setup() {
       delay(1000);
     }
   }
-  tv.bitmap(0, 0, image);
 }
 
 void loop() {
@@ -52,4 +51,5 @@ void loop() {
     Serial.println(magZ);
     Serial.println("\n\n\n\n");
   }
+  tv.bitmap((int)abs(magX), (int)abs(magY), image, 0, 104 - (int)abs(magX), 86 - (int)abs(magY));
 }

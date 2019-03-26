@@ -41,8 +41,8 @@ extern float magX, magY, magZ;
 // #define _TIME_VIRT_SYNC				magY/3
 #define _TIME_ACTIVE				46
 // #define _TIME_ACTIVE				((int)magX)
-#define _CYCLES_VIRT_SYNC			((_TIME_VIRT_SYNC * _CYCLES_PER_US) - 1 + magY*4)
-#define _CYCLES_HORZ_SYNC			((_TIME_HORZ_SYNC * _CYCLES_PER_US) - 1 + magX)
+#define _CYCLES_VIRT_SYNC			((_TIME_VIRT_SYNC * _CYCLES_PER_US) - 1 + abs(magY)*80)
+#define _CYCLES_HORZ_SYNC			((_TIME_HORZ_SYNC * _CYCLES_PER_US) - 1 + constrain(magX, -3, 5)*4)
 
 //Timing settings for NTSC
 #define _NTSC_TIME_SCANLINE			63.55
