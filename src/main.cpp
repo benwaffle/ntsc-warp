@@ -6,6 +6,7 @@
 
 TVout tv;
 MPU9250_DMP imu;
+float magX, magY, magZ;
 
 void setup() {
   Serial.begin(9600);
@@ -42,26 +43,13 @@ void setup() {
 
 void loop() {
   if (imu.dataReady()) {
-    imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
-    float accelX = imu.calcAccel(imu.ax);
-    float accelY = imu.calcAccel(imu.ay);
-    float accelZ = imu.calcAccel(imu.az);
-    float gyroX = imu.calcGyro(imu.gx);
-    float gyroY = imu.calcGyro(imu.gy);
-    float gyroZ = imu.calcGyro(imu.gz);
-    float magX = imu.calcMag(imu.mx);
-    float magY = imu.calcMag(imu.my);
-    float magZ = imu.calcMag(imu.mz);
-
-    Serial.println(String(accelX));
-
-    // Serial.println("Accel: " + String(accelX) + ", " + String(accelY) + ", " +
-    //                String(accelZ) + " g");
-    // Serial.println("Gyro: " + String(gyroX) + ", " + String(gyroY) + ", " +
-    //                String(gyroZ) + " dps");
-    // Serial.println("Mag: " + String(magX) + ", " + String(magY) + ", " +
-    //                String(magZ) + " uT");
-    // Serial.println("Time: " + String(imu.time) + " ms");
-    Serial.println(); // WTF
+    imu.update(UPDATE_COMPASS);
+    magX = imu.calcMag(imu.mx);
+    magY = imu.calcMag(imu.my);
+    magZ = imu.calcMag(imu.mz);
+    Serial.println(magX);
+    Serial.println(magY);
+    Serial.println(magZ);
+    Serial.println("\n\n\n\n");
   }
 }

@@ -103,7 +103,7 @@ void render_setup(uint8_t mode, uint8_t x, uint8_t y, uint8_t *scrnptr) {
 		display.lines_frame = _PAL_LINE_FRAME;
 		ICR1 = _PAL_CYCLES_SCANLINE;
 		OCR1A = _CYCLES_HORZ_SYNC;
-		}
+	}
 	else {
 		display.start_render = _NTSC_LINE_MID - ((display.vres * (display.vscale_const+1))/2) + 8;
 		display.output_delay = _NTSC_CYCLES_OUTPUT_START;
